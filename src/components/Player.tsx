@@ -1,5 +1,8 @@
 import { PlayerIcon } from "./PlayerIcon";
 
+export const TurnDegrees = 10;
+export const MoveAmount = 1;
+
 export type IPlayer = {
   id: number;
   x: number;
