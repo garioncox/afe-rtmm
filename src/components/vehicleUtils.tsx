@@ -36,6 +36,14 @@ export function moveVehicle(vehicle: IPlayer) {
   xMove = Math.round(xMove * 100) / 100;
   yMove = Math.round(yMove * 100) / 100;
 
+  let newRotation = vehicle.rotation + degrees;
+  if (newRotation < 0) {
+    newRotation += 360;
+  }
+  if (newRotation >= 360) {
+    newRotation -= 360;
+  }
+
   const newVehicle: IPlayer = {
     id: vehicle.id,
     x: vehicle.x + xMove,

@@ -1,5 +1,12 @@
-import { createContext, ReactNode, useContext, useState } from "react";
-import { IPlayer, MoveDirection, TurnDirection } from "./Player";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { IPlayer, MoveDirection, TurnDegrees, TurnDirection } from "./Player";
+import { moveVehicle } from "./vehicleUtils";
 
 export interface IGameServerContext {
   currentVehicle: IPlayer;
@@ -43,8 +50,60 @@ export const GameServerContextProvider = ({
   });
 
   const updateVehicle = (id: number, vehicleAction: vehicleAction) => {
-    // Update vehicle
+    const newVehicle = { ...currentVehicle };
+
+    switch (vehicleAction) {
+      case "moveForward": {
+        newVehicle.moveDirection = MoveDirection.FORWARDS;
+        break;
+      }
+      case "moveBackward": {
+        newVehicle.moveDirection = MoveDirection.BACKWARDS;
+        break;
+      }
+      case "turnLeft": {
+        newVehicle.turnDirection = TurnDirection.LEFT;
+        break;
+      }
+      case "turnRight": {
+        newVehicle.turnDirection = TurnDirection.RIGHT;
+        break;
+      }
+      case "stopForwards": {
+        newVehicle.moveDirection = MoveDirection.NONE;
+        break;
+      }
+      case "stopBackwards": {
+        newVehicle.moveDirection = MoveDirection.NONE;
+        break;
+      }
+      case "stopLeft": {
+        newVehicle.turnDirection = TurnDirection.NONE;
+        break;
+      }
+      case "stopRight": {
+        newVehicle.turnDirection = TurnDirection.NONE;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+
+    setCurrentVehicle(newVehicle);
   };
+
+  useEffect(() => {
+    console.log(currentVehicle);
+    const move = () => {
+      setCurrentVehicle((prevVehicle) => {
+        const movedVehicle = moveVehicle(prevVehicle);
+        return movedVehicle;
+      });
+    };
+
+    setTimeout(() => move(), 1000);
+  }, [currentVehicle]);
 
   return (
     <gameContext.Provider value={{ currentVehicle, updateVehicle }}>

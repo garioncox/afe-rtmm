@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("multiplayer-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8bfb8cf52fc0378bb0b75e9680b19135494696c9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3d7f27e073bef98506f44228f77bff76db02a974")]
 [assembly: System.Reflection.AssemblyProductAttribute("multiplayer-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("multiplayer-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
