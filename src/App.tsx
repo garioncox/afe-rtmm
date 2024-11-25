@@ -8,8 +8,14 @@ function App() {
   // context.updateVehicle(1, "stopForwards");
 
   return (
-    <PlayerControls>
-      <Player p={context.currentVehicle} viewBox={100} />
+    <PlayerControls
+      vehicleId={0}
+      forwardsKey={"w"}
+      backwardsKey={"s"}
+      leftKey={"a"}
+      rightKey={"d"}
+    >
+      <Player p={context.currentVehicles[0]} viewBox={100} />
     </PlayerControls>
   );
 }

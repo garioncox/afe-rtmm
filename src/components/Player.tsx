@@ -1,7 +1,7 @@
 import { PlayerIcon } from "./PlayerIcon";
 
-export const TurnDegrees = 10;
-export const MoveAmount = 1;
+export const TurnDegrees = 2;
+export const MoveAmount = 2;
 
 export type IPlayer = {
   id: number;
@@ -29,7 +29,7 @@ export function Player({ p, viewBox }: { p: IPlayer; viewBox: number }) {
     <div
       style={{
         position: "fixed",
-        rotate: `${p.rotation}deg`,
+        rotate: `${p.rotation + 90}deg`,
         fill: "#999999",
         width: `${viewBox}px`,
         height: `${viewBox}px`,

@@ -1,58 +1,70 @@
-import { ReactNode, useEffect, useState } from "react";
-import { useGameContext, vehicleAction } from "./GameServerContext";
+import { ReactNode, useEffect } from "react";
+import { useGameContext } from "./GameServerContext";
 
-export const PlayerControls = ({ children }: { children: ReactNode }) => {
+export const PlayerControls = ({
+  children,
+  forwardsKey,
+  backwardsKey,
+  leftKey,
+  rightKey,
+  vehicleId,
+}: {
+  children: ReactNode;
+  forwardsKey: string;
+  backwardsKey: string;
+  leftKey: string;
+  rightKey: string;
+  vehicleId: number;
+}) => {
   const context = useGameContext();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       switch (e.key.toLowerCase()) {
-        case "w": {
-          context.updateVehicle(1, "moveForward");
+        case forwardsKey: {
+          context.updateVehicle(vehicleId, "moveForward");
           break;
         }
-        case "a": {
-          context.updateVehicle(1, "turnLeft");
+        case leftKey: {
+          context.updateVehicle(vehicleId, "turnLeft");
           break;
         }
-        case "s": {
-          context.updateVehicle(1, "moveBackward");
+        case backwardsKey: {
+          context.updateVehicle(vehicleId, "moveBackward");
           break;
         }
-        case "d": {
-          context.updateVehicle(1, "turnRight");
+        case rightKey: {
+          context.updateVehicle(vehicleId, "turnRight");
           break;
         }
         default: {
           break;
         }
       }
-      // console.log("Key Down:", e.key);
     };
 
     const handleKeyUp = (e) => {
       switch (e.key.toLowerCase()) {
-        case "w": {
-          context.updateVehicle(1, "stopForwards");
+        case forwardsKey: {
+          context.updateVehicle(vehicleId, "stopForwards");
           break;
         }
-        case "a": {
-          context.updateVehicle(1, "stopLeft");
+        case leftKey: {
+          context.updateVehicle(vehicleId, "stopLeft");
           break;
         }
-        case "s": {
-          context.updateVehicle(1, "stopBackwards");
+        case backwardsKey: {
+          context.updateVehicle(vehicleId, "stopBackwards");
           break;
         }
-        case "d": {
-          context.updateVehicle(1, "stopRight");
+        case rightKey: {
+          context.updateVehicle(vehicleId, "stopRight");
           break;
         }
         default: {
           break;
         }
       }
-      // console.log("Key Up:", e.key);
     };
 
     window.addEventListener("keydown", handleKeyDown);

@@ -23,8 +23,8 @@ export function moveVehicle(vehicle: IPlayer) {
     moveDistance -= MoveAmount;
   }
 
-  let xMove = Math.cos(degrees_to_radians(vehicle.rotation)) * moveDistance;
-  let yMove = Math.sin(degrees_to_radians(vehicle.rotation)) * moveDistance;
+  let yMove = Math.cos(degrees_to_radians(vehicle.rotation)) * moveDistance;
+  let xMove = Math.sin(degrees_to_radians(vehicle.rotation)) * moveDistance;
 
   if (Math.abs(xMove) < 0.01) {
     xMove = 0;

@@ -4,6 +4,8 @@ import {
   MoveDirection,
   Player,
   TurnDirection,
+  TurnDegrees,
+  MoveAmount,
 } from "../../../src/components/Player";
 import { moveVehicle } from "../../../src/components/vehicleUtils";
 
@@ -21,7 +23,7 @@ test("A user can turn the vehicle left", () => {
     id: 0,
     x: 0,
     y: 0,
-    rotation: -10,
+    rotation: -TurnDegrees,
     turnDirection: TurnDirection.LEFT,
     moveDirection: MoveDirection.NONE,
   };
@@ -43,7 +45,7 @@ test("A user can turn the vehicle right", () => {
     id: 0,
     x: 0,
     y: 0,
-    rotation: 10,
+    rotation: TurnDegrees,
     turnDirection: TurnDirection.RIGHT,
     moveDirection: MoveDirection.NONE,
   };
@@ -78,16 +80,16 @@ test("A user can accelerate directly on the x axis", () => {
     id: 0,
     x: 0,
     y: 0,
-    rotation: 0,
+    rotation: 90,
     turnDirection: TurnDirection.NONE,
     moveDirection: MoveDirection.FORWARDS,
   };
 
   const expected: IPlayer = {
     id: 0,
-    x: 1,
+    x: MoveAmount,
     y: 0,
-    rotation: 0,
+    rotation: 90,
     turnDirection: TurnDirection.NONE,
     moveDirection: MoveDirection.FORWARDS,
   };
@@ -100,7 +102,7 @@ test("A user can accelerate directly on the y axis", () => {
     id: 0,
     x: 0,
     y: 0,
-    rotation: 90,
+    rotation: 0,
     turnDirection: TurnDirection.NONE,
     moveDirection: MoveDirection.FORWARDS,
   };
@@ -108,8 +110,8 @@ test("A user can accelerate directly on the y axis", () => {
   const expected: IPlayer = {
     id: 0,
     x: 0,
-    y: 1,
-    rotation: 90,
+    y: MoveAmount,
+    rotation: 0,
     turnDirection: TurnDirection.NONE,
     moveDirection: MoveDirection.FORWARDS,
   };
@@ -129,8 +131,8 @@ test("A user can move on a 45 degree angle", () => {
 
   const expected: IPlayer = {
     id: 0,
-    x: .71,
-    y: .71,
+    x: 0.71,
+    y: 0.71,
     rotation: 45,
     turnDirection: TurnDirection.NONE,
     moveDirection: MoveDirection.FORWARDS,
@@ -139,7 +141,6 @@ test("A user can move on a 45 degree angle", () => {
   expect(moveVehicle(player)).toEqual(expected);
 });
 test("A user can move on a 225 degree angle", () => {
-
   const player: IPlayer = {
     id: 0,
     x: 0,
@@ -151,8 +152,8 @@ test("A user can move on a 225 degree angle", () => {
 
   const expected: IPlayer = {
     id: 0,
-    x: -.71,
-    y: -.71,
+    x: -0.71 * MoveAmount,
+    y: -0.71 * MoveAmount,
     rotation: 225,
     turnDirection: TurnDirection.NONE,
     moveDirection: MoveDirection.FORWARDS,
@@ -172,8 +173,8 @@ test("A user can move on a -45 degree angle", () => {
 
   const expected: IPlayer = {
     id: 0,
-    x: .71,
-    y: -.71,
+    x: -0.71 * MoveAmount,
+    y: 0.71 * MoveAmount,
     rotation: -45,
     turnDirection: TurnDirection.NONE,
     moveDirection: MoveDirection.FORWARDS,
@@ -181,4 +182,3 @@ test("A user can move on a -45 degree angle", () => {
 
   expect(moveVehicle(player)).toEqual(expected);
 });
-
