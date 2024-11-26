@@ -55,9 +55,11 @@ export const GameServerContextProvider = ({
     },
   ]);
 
+  const [socket, setSocket] = useState<WebSocket | undefined>(undefined);
+
   const updateVehicle = (id: number, vehicleAction: vehicleAction) => {
     setCurrentVehicles((oldVehicles) => {
-      const newVehicle = oldVehicles.filter((v) => v.id === id)[0];
+      const newVehicle = oldVehicles.find((v) => v.id === id)!;
 
       switch (vehicleAction) {
         case "moveForward": {
@@ -97,33 +99,51 @@ export const GameServerContextProvider = ({
         }
       }
 
-      const sameVehicle = oldVehicles.filter((v) => v.id != id);
+      // oldVehicles[newVehicle.id]
+      const sameVehicle = oldVehicles.filter((v) => v.id !== id);
 
       return [...sameVehicle, newVehicle];
     });
   };
 
-  const addVehicle = () => {
-    // TODO: Implement
+  const addVehicle = (vehicle: IPlayer) => {
+    vehicle.id = currentVehicles.length;
+    setCurrentVehicles((previousVehicles) => [...previousVehicles, vehicle]);
   };
+
+  useEffect(() => {
+    const newSocket = new WebSocket("ws://localhost:5054/ws");
+    setSocket(newSocket);
+
+    // Connection opened
+    newSocket.addEventListener("open", (event) => {
+      console.log("Connected to server");
+      newSocket.send(JSON.stringify(currentVehicles));
+    });
+
+    // Listen for messages
+    newSocket.addEventListener("message", (event) => {
+      console.log("Message from server ", event.data);
+    });
+  }, []);
 
   useEffect(() => {
     const move = () => {
       setCurrentVehicles((oldVehicles) => {
-        const id = 0;
-
-        const movedVehicle = moveVehicle(
-          oldVehicles.filter((v) => v.id === id)[0]
-        );
-        const sameVehicle = oldVehicles.filter((v) => v.id != id);
-
-        return [...sameVehicle, movedVehicle];
+        return oldVehicles.map((v) => moveVehicle(v));
       });
+    };
+
+    const broadcastMessage = () => {
+      if (socket) {
+        socket.send(JSON.stringify(currentVehicles));
+      }
     };
 
     const loop = () => {
       setTimeout(() => {
         move();
+        broadcastMessage();
         loop();
       }, 1000 / 100);
     };
