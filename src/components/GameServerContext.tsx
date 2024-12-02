@@ -123,9 +123,24 @@ export const GameServerContextProvider = ({
 
     // Listen for messages
     newSocket.addEventListener("message", (event) => {
-      console.log("Message from server ", event.data);
+      const vehicles: IPlayer[] = JSON.parse(event.data);
+      // console.log(vehicles);
+      // setCurrentVehicles(vehicles);
+      console.log("Message from server ", vehicles);
     });
   }, []);
+
+  useEffect(() => {
+    const broadcastMessage = () => {
+      // console.log(socket?.readyState);
+      if (socket && socket.readyState == socket.OPEN && currentVehicles) {
+        // console.log("Before send", currentVehicles);
+        socket.send(JSON.stringify(currentVehicles));
+      }
+    };
+
+    broadcastMessage();
+  }, [currentVehicles]);
 
   useEffect(() => {
     const move = () => {
@@ -134,22 +149,15 @@ export const GameServerContextProvider = ({
       });
     };
 
-    const broadcastMessage = () => {
-      if (socket) {
-        socket.send(JSON.stringify(currentVehicles));
-      }
-    };
-
     const loop = () => {
       setTimeout(() => {
         move();
-        broadcastMessage();
         loop();
       }, 1000 / 100);
     };
 
     loop();
-  }, []);
+  }, [socket]);
 
   return (
     <gameContext.Provider

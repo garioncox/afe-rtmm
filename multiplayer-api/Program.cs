@@ -54,13 +54,14 @@ async Task Echo(WebSocket webSocket)
 
         foreach (WebSocket socket in webSockets)
         {
-            if (socket.State == WebSocketState.Closed) { continue; }
-
-            await socket.SendAsync(
-                new ArraySegment<byte>(buffer, 0, receiveResult.Count),
-                receiveResult.MessageType,
-                receiveResult.EndOfMessage,
-                CancellationToken.None);
+            if (socket.State != WebSocketState.Closed)
+            {
+                await socket.SendAsync(
+                    new ArraySegment<byte>(buffer, 0, receiveResult.Count),
+                    receiveResult.MessageType,
+                    receiveResult.EndOfMessage,
+                    CancellationToken.None);
+            }
         }
 
         receiveResult = await webSocket.ReceiveAsync(
