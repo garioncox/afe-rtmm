@@ -99,16 +99,19 @@ export const GameServerContextProvider = ({
         }
       }
 
-      // oldVehicles[newVehicle.id]
       const sameVehicle = oldVehicles.filter((v) => v.id !== id);
-
       return [...sameVehicle, newVehicle];
     });
   };
 
   const addVehicle = (vehicle: IPlayer) => {
     vehicle.id = currentVehicles.length;
-    setCurrentVehicles((previousVehicles) => [...previousVehicles, vehicle]);
+    setCurrentVehicles((previousVehicles) => {
+      if (previousVehicles.find((v) => v.id === vehicle.id)) {
+        return previousVehicles;
+      }
+      return [...previousVehicles, vehicle];
+    });
   };
 
   useEffect(() => {
@@ -118,24 +121,18 @@ export const GameServerContextProvider = ({
     // Connection opened
     newSocket.addEventListener("open", (event) => {
       console.log("Connected to server");
-      newSocket.send(JSON.stringify(currentVehicles));
-    });
-
-    // Listen for messages
-    newSocket.addEventListener("message", (event) => {
-      const vehicles: IPlayer[] = JSON.parse(event.data);
-      // console.log(vehicles);
-      // setCurrentVehicles(vehicles);
-      console.log("Message from server ", vehicles);
     });
   }, []);
 
   useEffect(() => {
     const broadcastMessage = () => {
-      // console.log(socket?.readyState);
       if (socket && socket.readyState == socket.OPEN && currentVehicles) {
-        // console.log("Before send", currentVehicles);
-        socket.send(JSON.stringify(currentVehicles));
+        socket.send(
+          JSON.stringify({
+            eventType: "allVehicles",
+            vehicles: currentVehicles,
+          })
+        );
       }
     };
 
