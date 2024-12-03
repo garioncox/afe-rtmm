@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from "react";
-import { useGameContext } from "./GameServerContext";
+import { useGameClientContext } from "./GameClientContext";
 
 export const PlayerControls = ({
   children,
@@ -16,7 +16,7 @@ export const PlayerControls = ({
   rightKey: string;
   vehicleId: number;
 }) => {
-  const context = useGameContext();
+  const context = useGameClientContext();
 
   useEffect(() => {
     const handleKeyDown = (e) => {

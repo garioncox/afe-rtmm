@@ -8,13 +8,13 @@ import {
 import { IPlayer, MoveDirection, TurnDegrees, TurnDirection } from "./Player";
 import { moveVehicle } from "./vehicleUtils";
 
-export interface IGameServerContext {
+export interface IGameContext {
   currentVehicles: IPlayer[];
   updateVehicle: (id: number, vehicleAction: vehicleAction) => void;
   addVehicle: (player: IPlayer) => void;
 }
 
-export const gameContext = createContext<IGameServerContext>({
+export const gameContext = createContext<IGameContext>({
   currentVehicles: [
     {
       id: 0,
@@ -44,16 +44,7 @@ export const GameServerContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [currentVehicles, setCurrentVehicles] = useState<IPlayer[]>([
-    {
-      id: 0,
-      x: 0,
-      y: 0,
-      rotation: 0,
-      turnDirection: TurnDirection.NONE,
-      moveDirection: MoveDirection.NONE,
-    },
-  ]);
+  const [currentVehicles, setCurrentVehicles] = useState<IPlayer[]>([]);
 
   const [socket, setSocket] = useState<WebSocket | undefined>(undefined);
 
@@ -121,6 +112,23 @@ export const GameServerContextProvider = ({
     // Connection opened
     newSocket.addEventListener("open", (event) => {
       console.log("Connected to server");
+    });
+
+    // Listen for messages
+    newSocket.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.eventType === "updateVehicle") {
+        const id = data.vehicleId;
+        const vehicleAction = data.vehicleAction;
+        updateVehicle(id, vehicleAction);
+        console.log(`Message from Server: move ${id} ${vehicleAction}`);
+      }
+
+      if (data.eventType === "addVehicle") {
+        const vehicle = data.vehicle;
+        addVehicle(vehicle);
+      }
     });
   }, []);
 

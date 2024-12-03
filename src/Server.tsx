@@ -1,23 +1,9 @@
-import { useEffect } from "react";
 import { useGameContext } from "./components/GameServerContext";
-import { TurnDirection, MoveDirection, Player } from "./components/Player";
+import { Player } from "./components/Player";
 import { PlayerControls } from "./components/PlayerControls";
 
 export const Server = () => {
   const gameContext = useGameContext();
-
-  useEffect(() => {
-    if (gameContext.currentVehicles.length === 1) {
-      gameContext.addVehicle({
-        id: 1,
-        x: 100,
-        y: 100,
-        rotation: 0,
-        turnDirection: TurnDirection.NONE,
-        moveDirection: MoveDirection.NONE,
-      });
-    }
-  }, []);
 
   return (
     <>

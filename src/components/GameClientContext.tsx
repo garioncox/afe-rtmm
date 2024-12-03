@@ -6,15 +6,11 @@ import {
   useState,
 } from "react";
 import { IPlayer, MoveDirection, TurnDegrees, TurnDirection } from "./Player";
-import { moveVehicle } from "./vehicleUtils";
+import { IGameContext, vehicleAction } from "./GameServerContext";
 
-export interface IGameClientContext {
-  currentVehicles: IPlayer[];
-  addVehicle: (player: IPlayer) => void;
-}
-
-export const gameClientContext = createContext<IGameClientContext>({
+export const gameClientContext = createContext<IGameContext>({
   currentVehicles: [],
+  updateVehicle: (id: number, vehicleAction: vehicleAction) => {},
   addVehicle: (player: IPlayer) => {},
 });
 
@@ -23,22 +19,33 @@ export const GameClientContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [currentVehicles, setCurrentVehicles] = useState<IPlayer[]>([
-    {
-      id: 0,
-      x: 0,
-      y: 0,
-      rotation: 0,
-      turnDirection: TurnDirection.NONE,
-      moveDirection: MoveDirection.NONE,
-    },
-  ]);
+  const [currentVehicles, setCurrentVehicles] = useState<IPlayer[]>([]);
 
   const [socket, setSocket] = useState<WebSocket | undefined>(undefined);
 
   const addVehicle = (vehicle: IPlayer) => {
-    vehicle.id = currentVehicles.length;
-    setCurrentVehicles((previousVehicles) => [...previousVehicles, vehicle]);
+    if (socket && socket.readyState == socket.OPEN) {
+      console.log("Adding vehicle");
+      socket.send(
+        JSON.stringify({
+          eventType: "updateVehicle",
+          vehicle: vehicle,
+        })
+      );
+    }
+  };
+
+  const updateVehicle = (id: number, vehicleAction: string) => {
+    if (socket && socket.readyState == socket.OPEN) {
+      console.log("Updating vehicle");
+      socket.send(
+        JSON.stringify({
+          eventType: "updateVehicle",
+          vehicleId: id,
+          vehicleAction: vehicleAction,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -56,13 +63,27 @@ export const GameClientContextProvider = ({
 
       if (data.eventType === "allVehicles") {
         const vehicles = data.vehicles;
-        console.log("Message from server: ", vehicles);
+        setCurrentVehicles(vehicles);
       }
     });
   }, []);
 
+  useEffect(() => {
+    console.log("here");
+    addVehicle({
+      id: 1,
+      x: 100,
+      y: 100,
+      rotation: 0,
+      turnDirection: TurnDirection.NONE,
+      moveDirection: MoveDirection.NONE,
+    });
+  }, [socket?.readyState]);
+
   return (
-    <gameClientContext.Provider value={{ currentVehicles, addVehicle }}>
+    <gameClientContext.Provider
+      value={{ currentVehicles, updateVehicle, addVehicle }}
+    >
       {children}
     </gameClientContext.Provider>
   );

@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { useGameClientContext } from "./components/GameClientContext";
-import { Player } from "./components/Player";
+import { MoveDirection, Player, TurnDirection } from "./components/Player";
 import { PlayerControls } from "./components/PlayerControls";
 
 export const Client = () => {

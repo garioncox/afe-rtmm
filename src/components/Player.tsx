@@ -24,7 +24,17 @@ export enum MoveDirection {
   "NONE",
 }
 
-export function Player({ p, viewBox }: { p: IPlayer; viewBox: number }) {
+export function Player({
+  p,
+  viewBox,
+}: {
+  p: IPlayer | undefined;
+  viewBox: number;
+}) {
+  if (!p) {
+    return <></>;
+  }
+
   return (
     <div
       style={{
